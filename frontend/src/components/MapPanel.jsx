@@ -29,18 +29,18 @@ function MapPanel({ activeLayer, setActiveLayer, scenario }) {
 
   return (
     <section className="rounded-[20px] border-2 border-sky-700/80 bg-sky-50/80 shadow-[0_6px_0_rgba(25,64,83,0.12)]">
-      <div className="relative h-[560px] overflow-hidden rounded-[18px] border-2 border-sky-700/70 bg-[linear-gradient(120deg,rgba(147,196,114,0.9),rgba(90,136,75,0.86))] m-[10px_10px_0]">
-        <div className="absolute left-4 top-4 z-[500] flex w-[260px] items-center gap-2 rounded-xl border-2 border-sky-700/80 bg-white/85 px-3 py-2 text-sm text-slate-500 shadow-lg backdrop-blur-sm">
+      <div className="relative h-140 overflow-hidden rounded-[18px] border-2 border-sky-700/70 bg-[linear-gradient(120deg,rgba(147,196,114,0.9),rgba(90,136,75,0.86))] m-[10px_10px_0]">
+        <div className="absolute left-4 top-4 z-500 flex w-65 items-center gap-2 rounded-xl border-2 border-sky-700/80 bg-white/85 px-3 py-2 text-sm text-slate-500 shadow-lg backdrop-blur-sm">
           <Search size={16} />
           <span>Search location...</span>
         </div>
 
-        <div className="absolute bottom-4 left-4 z-[500] rounded-xl border-2 border-sky-700/80 bg-slate-950/90 px-3 py-2 text-white shadow-lg backdrop-blur-sm">
+        <div className="absolute bottom-4 left-4 z-500 rounded-xl border-2 border-sky-700/80 bg-slate-950/90 px-3 py-2 text-white shadow-lg backdrop-blur-sm">
           <div className="text-[0.65rem] font-bold uppercase tracking-[0.12em] text-cyan-300">Active scenario</div>
           <div className="mt-0.5 text-sm font-black">{scenario} <span className="font-normal text-slate-400">/ {activeLayer}</span></div>
         </div>
 
-        <div className="absolute right-4 top-4 z-[500] w-[220px] rounded-xl border-2 border-sky-700/80 bg-slate-50/90 p-2 shadow-xl backdrop-blur-sm">
+        <div className="absolute right-4 top-4 z-500 w-55 rounded-xl border-2 border-sky-700/80 bg-slate-50/90 p-2 shadow-xl backdrop-blur-sm">
           <div className="mb-1.5 flex items-center gap-2 text-[0.85rem] font-bold text-slate-800">
             <Layers3 size={15} />
             <span>Layers</span>

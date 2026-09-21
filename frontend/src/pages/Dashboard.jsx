@@ -69,13 +69,13 @@ function Dashboard() {
 
   return (
     <div className="space-y-4">
-      <section className="flex flex-wrap items-center justify-between gap-4 rounded-[20px] border-2 border-sky-700/80 bg-slate-950 px-5 py-4 text-white shadow-[0_6px_0_rgba(25,64,83,0.12)]">
+      <section className="flex flex-wrap items-center justify-between gap-4 rounded-[20px] border-2 border-sky-700/80 bg-cyan-250 px-5 py-4 text-blue-900 font-serif">
         <div className="flex min-w-0 items-center gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-cyan-400 text-slate-950">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-b-md bg-cyan-400 text-slate-950">
             <MapPinned size={20} />
           </div>
           <div className="min-w-0">
-            <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-bold uppercase tracking-[0.12em] text-cyan-300">
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-bold uppercase tracking-[0.12em] text-blue-900">
               <span>{form.river} River Basin</span>
               <span className="text-slate-500">/</span>
               <span>{form.dam}</span>
@@ -84,10 +84,10 @@ function Dashboard() {
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-2 text-xs font-bold">
-          <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/40 bg-emerald-400/10 px-3 py-2 text-emerald-300">
+          <span className="inline-flex items-center gap-2 rounded-full border border-blue-300 bg-emerald-400/10 px-3 py-2 text-blue-900">
             <Activity size={14} /> Scenario ready
           </span>
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-2 text-slate-300">
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-2 text-blue-900">
             <CalendarDays size={14} /> 21 Sep 2026
           </span>
         </div>

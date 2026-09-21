@@ -1,19 +1,15 @@
+import { CheckCircle2, Clock3, Database, FileUp, Play, Waves } from 'lucide-react'
+
 function Simulation() {
+  const steps = [['Data validation', 'DEM, river and dam inputs checked', 'complete'], ['Domain generation', 'Preparing terrain and computational mesh', 'complete'], ['Hydrodynamic run', 'SPH + Delft3D comparison', 'active'], ['Result processing', 'Flood layers and impact overlays', 'queued']]
+  const datasets = [['Digital elevation model', 'Copernicus DEM / 30 m', 'Ready'], ['River network', 'HydroSHEDS / Kosi corridor', 'Ready'], ['Satellite baseline', 'Sentinel-1 / 18 Sep 2026', 'Ready'], ['Infrastructure layer', 'OpenStreetMap extract', 'Needs review']]
+
   return (
-    <div className="rounded-[24px] border-2 border-sky-700/80 bg-sky-50/85 p-8 shadow-[0_6px_0_rgba(25,64,83,0.12)]">
-      <h1 className="text-3xl font-black tracking-[-0.05em] text-sky-700">Simulation Queue</h1>
-      <div className="mt-6 grid gap-4 md:grid-cols-3">
-        {[
-          ['Active Run', 'Kosi Dam / Major Breach', 'Completed'],
-          ['Queued', 'Tehri / Partial Breach', 'Waiting'],
-          ['Archive', 'Sardar Sarovar / Controlled', 'Ready'],
-        ].map(([title, detail, status]) => (
-          <div key={title} className="rounded-2xl border border-sky-700/60 bg-white/40 p-5">
-            <div className="text-sm font-semibold uppercase tracking-wide text-sky-700">{title}</div>
-            <div className="mt-3 text-xl font-bold text-slate-800">{detail}</div>
-            <div className="mt-4 inline-flex rounded-full bg-sky-100 px-3 py-1 text-xs font-bold text-sky-800">{status}</div>
-          </div>
-        ))}
+    <div className="space-y-4">
+      <section className="flex flex-wrap items-center justify-between gap-4 rounded-[24px] border-2 border-sky-700/80 bg-slate-950 p-6 text-white shadow-[0_6px_0_rgba(25,64,83,0.12)]"><div><div className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.14em] text-cyan-300"><Waves size={15} /> Run monitor</div><h1 className="text-3xl font-black tracking-[-0.05em]">Simulation queue</h1><p className="mt-2 text-sm text-slate-300">Kosi Dam / Major Breach / Run HS-2026-0921-01</p></div><button type="button" className="inline-flex items-center gap-2 rounded-xl bg-cyan-400 px-4 py-2.5 text-sm font-black text-slate-950"><Play size={16} /> New simulation</button></section>
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1.25fr)_0.85fr]">
+        <section className="rounded-[20px] border-2 border-sky-700/80 bg-sky-50/85 p-5 shadow-[0_6px_0_rgba(25,64,83,0.12)]"><div className="flex items-center justify-between"><div><h2 className="text-lg font-black text-slate-800">Current run</h2><p className="text-xs font-semibold text-slate-500">Started 2 minutes ago / estimated 6 minutes remaining</p></div><span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-800">Processing</span></div><div className="mt-6 space-y-4">{steps.map(([title, detail, status], index) => <div key={title} className="flex gap-3"><div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${status === 'complete' ? 'bg-emerald-500 text-white' : status === 'active' ? 'bg-amber-400 text-slate-950' : 'border-2 border-slate-300 bg-white text-slate-400'}`}>{status === 'complete' ? <CheckCircle2 size={16} /> : status === 'active' ? <Clock3 size={16} /> : index + 1}</div><div className="flex-1 border-b border-sky-700/20 pb-4"><div className="flex justify-between gap-3"><span className="text-sm font-black text-slate-800">{title}</span><span className="text-xs font-bold text-slate-500">{status === 'complete' ? 'Complete' : status === 'active' ? 'In progress' : 'Queued'}</span></div><p className="mt-1 text-xs font-semibold text-slate-500">{detail}</p>{status === 'active' && <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-200"><div className="h-full w-[62%] rounded-full bg-amber-400" /></div>}</div></div>)}</div></section>
+        <section className="rounded-[20px] border-2 border-sky-700/80 bg-sky-50/85 p-5 shadow-[0_6px_0_rgba(25,64,83,0.12)]"><div className="flex items-center justify-between"><div><h2 className="text-lg font-black text-slate-800">Data readiness</h2><p className="text-xs font-semibold text-slate-500">3 of 4 sources available</p></div><Database size={19} className="text-sky-700" /></div><div className="mt-4 space-y-2">{datasets.map(([name, detail, status]) => <div key={name} className="flex items-center gap-3 rounded-xl border border-sky-700/30 bg-white/50 p-3"><div className={`h-2.5 w-2.5 rounded-full ${status === 'Ready' ? 'bg-emerald-500' : 'bg-amber-400'}`} /><div className="min-w-0 flex-1"><div className="text-sm font-bold text-slate-800">{name}</div><div className="truncate text-xs font-semibold text-slate-500">{detail}</div></div><span className={`text-[0.68rem] font-black ${status === 'Ready' ? 'text-emerald-700' : 'text-amber-700'}`}>{status}</span></div>)}</div><button type="button" className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-sky-700/50 bg-white/40 px-3 py-3 text-sm font-bold text-sky-800"><FileUp size={16} /> Upload replacement dataset</button></section>
       </div>
     </div>
   )

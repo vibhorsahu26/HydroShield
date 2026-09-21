@@ -1,6 +1,6 @@
 function Landing() {
   return (
-    <div className="rounded-[24px] border-2 border-sky-700/80 bg-sky-50/85 p-8 shadow-[0_6px_0_rgba(25,64,83,0.12)]">
+    <div className="rounded-3xl border-2 border-sky-700/80 bg-sky-50/85 p-8 shadow-[0_6px_0_rgba(25,64,83,0.12)]">
       <div className="mb-6 text-4xl font-black tracking-[-0.06em] text-sky-700">HydroShield</div>
       <p className="max-w-2xl text-lg text-slate-700">
         Short-term flood risk modeling, dam breach simulation, and impact analysis for critical infrastructure planning.
