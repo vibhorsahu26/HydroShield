@@ -21,8 +21,8 @@ button, input, select {
   font: inherit;
 }
 
-/* Keep dashboard div surfaces visually consistent with the medium radius. */
-div[class*="rounded"] {
+/* Keep all rounded surfaces visually consistent with a small radius. */
+[class*="rounded"] {
   border-radius: 0.375rem !important;
 }
 
