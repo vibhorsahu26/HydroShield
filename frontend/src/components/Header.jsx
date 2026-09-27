@@ -1,5 +1,6 @@
 import { Bell, Shield, User } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
+import hydroShieldLogo from "../assets/HydroShield_Logo.png";
 
 const navItems = [
   { label: 'Dashboard', to: '/' },
@@ -14,7 +15,11 @@ function Header() {
     <header className="mx-auto mt-4 flex w-[calc(100%-2rem)] max-w-[1700px] items-center justify-between gap-4 rounded-t-[20px] border-2 border-sky-700/80 bg-sky-50/90 px-5 py-3 shadow-[0_4px_0_rgba(25,64,83,0.14)] backdrop-blur-sm">
       <div className="flex min-w-[220px] items-center gap-3">
         <div className="flex h-11 w-11 items-center justify-center rounded-xl ">
-          <img src="./public/HydroShield_Logo.png" alt="logo" />
+          <img
+  src={hydroShieldLogo}
+  alt="HydroShield"
+  className="h-10 w-auto object-contain"
+/>
         </div>
         <div className="text-3xl font-bold tracking-[-0.08em] text-sky-700">
           HydroShield
