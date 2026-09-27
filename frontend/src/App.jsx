@@ -12,7 +12,6 @@ function App() {
     <BrowserRouter>
       <div className="min-h-screen bg-slate-100 text-slate-800">
         <Header />
-
         <main className="mx-auto w-full max-w-[1700px] px-4 py-5 md:px-6">
           <Routes>
             <Route path="/" element={<Dashboard />} />
@@ -27,5 +26,4 @@ function App() {
     </BrowserRouter>
   )
 }
-
 export default App

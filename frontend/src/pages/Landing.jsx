@@ -1,26 +1,4 @@
-function Landing() {
-  return (
-    <div className="rounded-3xl border-2 border-sky-700/80 bg-sky-50/85 p-8 shadow-[0_6px_0_rgba(25,64,83,0.12)]">
-      <div className="mb-6 text-4xl font-black tracking-[-0.06em] text-sky-700">HydroShield</div>
-      <p className="max-w-2xl text-lg text-slate-700">
-        Short-term flood risk modeling, dam breach simulation, and impact analysis for critical infrastructure planning.
-      </p>
-      <div className="mt-8 grid gap-4 md:grid-cols-3">
-        <div className="rounded-2xl border border-sky-700/60 bg-white/40 p-5">
-          <div className="text-sm font-semibold uppercase tracking-wide text-sky-700">Scenario</div>
-          <div className="mt-3 text-2xl font-black text-slate-800">Major Breach</div>
-        </div>
-        <div className="rounded-2xl border border-sky-700/60 bg-white/40 p-5">
-          <div className="text-sm font-semibold uppercase tracking-wide text-sky-700">Flood Area</div>
-          <div className="mt-3 text-2xl font-black text-slate-800">42.6 km²</div>
-        </div>
-        <div className="rounded-2xl border border-sky-700/60 bg-white/40 p-5">
-          <div className="text-sm font-semibold uppercase tracking-wide text-sky-700">Risk Level</div>
-          <div className="mt-3 text-2xl font-black text-slate-800">High</div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
+import { Database, Droplets, Satellite } from 'lucide-react'
+import { useHydroShield } from '../state/HydroShieldContext'
+function Landing() { const { project, datasets, jobs, analyses } = useHydroShield(); return <div className="space-y-4"><section className="rounded-[24px] border-2 border-sky-700/80 bg-slate-950 p-8 text-white"><div className="text-4xl font-black text-cyan-300">HydroShield</div><p className="mt-4 max-w-3xl text-lg text-slate-300">Automated dam-break and flood inundation decision-support: data validation, geospatial preprocessing, scenario generation, hydrodynamic orchestration, result analysis, satellite validation, and GIS exports.</p><div className="mt-5 text-sm font-semibold text-slate-400">Workspace: {project?.name || 'initializing'}</div></section><div className="grid gap-4 md:grid-cols-3"><div className="rounded-2xl border-2 border-sky-700/60 bg-sky-50/80 p-5"><Database className="text-sky-700" /><div className="mt-3 text-2xl font-black">{datasets.length}</div><div className="text-sm font-bold text-slate-600">Validated datasets</div></div><div className="rounded-2xl border-2 border-sky-700/60 bg-sky-50/80 p-5"><Droplets className="text-sky-700" /><div className="mt-3 text-2xl font-black">{jobs.filter((job) => job.status === 'completed').length}</div><div className="text-sm font-bold text-slate-600">Completed simulations</div></div><div className="rounded-2xl border-2 border-sky-700/60 bg-sky-50/80 p-5"><Satellite className="text-sky-700" /><div className="mt-3 text-2xl font-black">{analyses.length}</div><div className="text-sm font-bold text-slate-600">Analysis results</div></div></div></div> }
 export default Landing

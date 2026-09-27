@@ -1,0 +1,1 @@
+Place a compatible Delft3D FM runtime here for local execution, for example under `bin/` with `dimr` and/or `dflowfm`. Deltares distributes current Delft3D FM containers/runtimes separately; HydroShield does not bundle or redistribute that runtime.

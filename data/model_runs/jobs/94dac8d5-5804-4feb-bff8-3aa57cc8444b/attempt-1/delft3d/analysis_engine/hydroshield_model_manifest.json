@@ -1,0 +1,74 @@
+{
+  "model": "delft3d",
+  "runtime": "automatic",
+  "variant_parameters": {
+    "release_mode": "dam_breach",
+    "model": "sph",
+    "initial_reservoir_water_level_m": 120.0,
+    "reservoir_volume_m3": 5000000.0,
+    "breach_width_m": 20.0,
+    "breach_depth_m": 10.0,
+    "breach_formation_time_s": 300.0,
+    "initial_discharge_m3s": 100.0,
+    "controlled_release_discharge_m3s": null,
+    "simulation_duration_s": 3600.0
+  },
+  "input_dem": null,
+  "input_river": null,
+  "preprocessing_artifacts": {
+    "dem": "/mnt/data/hydroshield_delft3d_fix/work/data/model_runs/jobs/94dac8d5-5804-4feb-bff8-3aa57cc8444b/attempt-1/delft3d/analysis_engine/study_dem.tif"
+  },
+  "artifacts": {
+    "water_depth_raster": "/mnt/data/hydroshield_delft3d_fix/work/data/model_runs/jobs/94dac8d5-5804-4feb-bff8-3aa57cc8444b/attempt-1/delft3d/analysis_engine/water_depth_raster.tif",
+    "velocity_raster": "/mnt/data/hydroshield_delft3d_fix/work/data/model_runs/jobs/94dac8d5-5804-4feb-bff8-3aa57cc8444b/attempt-1/delft3d/analysis_engine/velocity_raster.tif",
+    "arrival_time_raster": "/mnt/data/hydroshield_delft3d_fix/work/data/model_runs/jobs/94dac8d5-5804-4feb-bff8-3aa57cc8444b/attempt-1/delft3d/analysis_engine/arrival_time_raster.tif",
+    "water_level_raster": "/mnt/data/hydroshield_delft3d_fix/work/data/model_runs/jobs/94dac8d5-5804-4feb-bff8-3aa57cc8444b/attempt-1/delft3d/analysis_engine/water_level_raster.tif",
+    "discharge_csv": "/mnt/data/hydroshield_delft3d_fix/work/data/model_runs/jobs/94dac8d5-5804-4feb-bff8-3aa57cc8444b/attempt-1/delft3d/analysis_engine/discharge.csv",
+    "time_series_water_depth": [
+      "/mnt/data/hydroshield_delft3d_fix/work/data/model_runs/jobs/94dac8d5-5804-4feb-bff8-3aa57cc8444b/attempt-1/delft3d/analysis_engine/timeseries/water_depth_t0000.tif",
+      "/mnt/data/hydroshield_delft3d_fix/work/data/model_runs/jobs/94dac8d5-5804-4feb-bff8-3aa57cc8444b/attempt-1/delft3d/analysis_engine/timeseries/water_depth_t0001.tif",
+      "/mnt/data/hydroshield_delft3d_fix/work/data/model_runs/jobs/94dac8d5-5804-4feb-bff8-3aa57cc8444b/attempt-1/delft3d/analysis_engine/timeseries/water_depth_t0002.tif",
+      "/mnt/data/hydroshield_delft3d_fix/work/data/model_runs/jobs/94dac8d5-5804-4feb-bff8-3aa57cc8444b/attempt-1/delft3d/analysis_engine/timeseries/water_depth_t0003.tif",
+      "/mnt/data/hydroshield_delft3d_fix/work/data/model_runs/jobs/94dac8d5-5804-4feb-bff8-3aa57cc8444b/attempt-1/delft3d/analysis_engine/timeseries/water_depth_t0004.tif",
+      "/mnt/data/hydroshield_delft3d_fix/work/data/model_runs/jobs/94dac8d5-5804-4feb-bff8-3aa57cc8444b/attempt-1/delft3d/analysis_engine/timeseries/water_depth_t0005.tif"
+    ],
+    "time_series_metadata": [
+      {
+        "index": 0,
+        "time_s": 216.0,
+        "path": "/mnt/data/hydroshield_delft3d_fix/work/data/model_runs/jobs/94dac8d5-5804-4feb-bff8-3aa57cc8444b/attempt-1/delft3d/analysis_engine/timeseries/water_depth_t0000.tif"
+      },
+      {
+        "index": 1,
+        "time_s": 792.0,
+        "path": "/mnt/data/hydroshield_delft3d_fix/work/data/model_runs/jobs/94dac8d5-5804-4feb-bff8-3aa57cc8444b/attempt-1/delft3d/analysis_engine/timeseries/water_depth_t0001.tif"
+      },
+      {
+        "index": 2,
+        "time_s": 1440.0,
+        "path": "/mnt/data/hydroshield_delft3d_fix/work/data/model_runs/jobs/94dac8d5-5804-4feb-bff8-3aa57cc8444b/attempt-1/delft3d/analysis_engine/timeseries/water_depth_t0002.tif"
+      },
+      {
+        "index": 3,
+        "time_s": 2160.0,
+        "path": "/mnt/data/hydroshield_delft3d_fix/work/data/model_runs/jobs/94dac8d5-5804-4feb-bff8-3aa57cc8444b/attempt-1/delft3d/analysis_engine/timeseries/water_depth_t0003.tif"
+      },
+      {
+        "index": 4,
+        "time_s": 2880.0,
+        "path": "/mnt/data/hydroshield_delft3d_fix/work/data/model_runs/jobs/94dac8d5-5804-4feb-bff8-3aa57cc8444b/attempt-1/delft3d/analysis_engine/timeseries/water_depth_t0004.tif"
+      },
+      {
+        "index": 5,
+        "time_s": 3600.0,
+        "path": "/mnt/data/hydroshield_delft3d_fix/work/data/model_runs/jobs/94dac8d5-5804-4feb-bff8-3aa57cc8444b/attempt-1/delft3d/analysis_engine/timeseries/water_depth_t0005.tif"
+      }
+    ]
+  },
+  "grid": {
+    "crs": "EPSG:32643",
+    "width": 180,
+    "height": 180,
+    "resolution_m": 100.0
+  }
+}

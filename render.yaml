@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: hydroshield-api
+    runtime: python
+    rootDir: backend
+    plan: free
+    buildCommand: pip install --upgrade pip && pip install ".[earthengine]"
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT --workers 1
+    healthCheckPath: /api/v1/health/ready
+    envVars:
+      - key: HYDROSHIELD_ENVIRONMENT
+        value: production
+      - key: HYDROSHIELD_DOCS_ENABLED
+        value: "false"
+      - key: HYDROSHIELD_RUN_MIGRATIONS_ON_STARTUP
+        value: "true"
+      - key: HYDROSHIELD_JOB_WORKER_COUNT
+        value: "1"
+      - key: HYDROSHIELD_DEMO_MODE
+        value: "true"
+      - key: HYDROSHIELD_DATABASE_URL
+        sync: false
+      - key: HYDROSHIELD_ALLOWED_HOSTS
+        sync: false
+      - key: HYDROSHIELD_ALLOWED_ORIGINS
+        sync: false
+      - key: HYDROSHIELD_EARTH_ENGINE_PROJECT
+        sync: false

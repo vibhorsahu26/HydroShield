@@ -1,0 +1,70 @@
+services:
+  postgis:
+    image: postgis/postgis:16-3.5
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-hydroshield}
+      POSTGRES_USER: ${POSTGRES_USER:-hydroshield}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-hydroshield}
+    volumes:
+      - hydroshield_postgis:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-hydroshield} -d ${POSTGRES_DB:-hydroshield}"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    networks: [hydroshield]
+
+  api:
+    build:
+      context: ./backend
+      args:
+        HYDROSHIELD_AUTO_PROVISION_DUALSPHYSICS: ${HYDROSHIELD_AUTO_PROVISION_DUALSPHYSICS:-true}
+    depends_on:
+      postgis:
+        condition: service_healthy
+    environment:
+      HYDROSHIELD_ENVIRONMENT: development
+      HYDROSHIELD_DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-hydroshield}:${POSTGRES_PASSWORD:-hydroshield}@postgis:5432/${POSTGRES_DB:-hydroshield}
+      HYDROSHIELD_ALLOWED_HOSTS: '["localhost","127.0.0.1","api"]'
+      HYDROSHIELD_ALLOWED_ORIGINS: '[]'
+      HYDROSHIELD_DOCS_ENABLED: "true"
+      HYDROSHIELD_RUN_MIGRATIONS_ON_STARTUP: "true"
+      HYDROSHIELD_JOB_WORKER_COUNT: ${HYDROSHIELD_JOB_WORKER_COUNT:-1}
+      HYDROSHIELD_DEMO_MODE: ${HYDROSHIELD_DEMO_MODE:-true}
+      HYDROSHIELD_DUAL_SPH_DEVICE: ${HYDROSHIELD_DUAL_SPH_DEVICE:-gpu}
+      HYDROSHIELD_DUAL_SPH_BIN_DIR: /opt/dualsphysics/bin
+      HYDROSHIELD_DELFT3D_BIN_DIR: /opt/delft3d/bin
+      HYDROSHIELD_EARTH_ENGINE_PROJECT: ${HYDROSHIELD_EARTH_ENGINE_PROJECT:-}
+      HYDROSHIELD_STORAGE_ROOT: /app/data/uploads
+      HYDROSHIELD_PROCESSING_WORK_DIR: /app/data/processed
+      HYDROSHIELD_EXPORT_ROOT: /app/data/exports
+      HYDROSHIELD_MODEL_WORK_DIR: /app/data/model_runs
+    volumes:
+      - hydroshield_api_data:/app/data
+      - ./solvers/delft3d:/opt/delft3d:ro
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; from app.core.config import get_settings; host=get_settings().allowed_hosts[0]; req=urllib.request.Request('http://127.0.0.1:8000/api/v1/health/ready', headers={'Host': host}); urllib.request.urlopen(req, timeout=3).read()"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    networks: [hydroshield]
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: /api/v1
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "8080:80"
+    networks: [hydroshield]
+
+networks:
+  hydroshield:
+volumes:
+  hydroshield_postgis:
+  hydroshield_api_data:

@@ -1,0 +1,1 @@
+{"type": "FeatureCollection", "features": [{"type": "Feature", "properties": {"source": "selected_geocoder_location", "name": "Selected dam location"}, "geometry": {"type": "Point", "coordinates": [85.0, 28.0]}}], "source": "OpenStreetMap Overpass API"}

@@ -3,9 +3,12 @@ import { createRoot } from 'react-dom/client'
 import 'leaflet/dist/leaflet.css'
 import './index.css'
 import App from './App.jsx'
+import { HydroShieldProvider } from './state/HydroShieldContext.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <App />
+    <HydroShieldProvider>
+      <App />
+    </HydroShieldProvider>
   </StrictMode>,
 )

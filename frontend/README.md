@@ -1,16 +1,59 @@
-# React + Vite
+# HydroShield — Integrated Full Stack
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+HydroShield is an automated dam-break and flood-inundation decision-support workflow built from the original HydroShield specification.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Frontend: React + Vite + Tailwind CSS + Leaflet
+- API: Python + FastAPI
+- Geospatial: Rasterio, GeoPandas, Shapely, PyProj, NumPy/Pandas
+- Persistence: PostgreSQL + PostGIS in production; SQLite for deterministic tests
+- Hydrodynamics: DualSPHysics 5.4.3 SPH adapter + Delft3D FM adapter
+- Analysis: flood metrics, exposure, model/scenario comparison
+- Earth observation: Google Earth Engine / Sentinel workflows
+- Exports: GeoJSON, SHP, KML, GeoTIFF, CSV, JSON
 
-## React Compiler
+## Integrated Docker deployment
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+1. Copy `.env.example` to `.env`.
+2. Set a strong `POSTGRES_PASSWORD`.
+3. Put the approved DualSPHysics 5.4.3 Linux binaries in `../solvers/dualsphysics/bin/` when real SPH execution is required.
+4. Configure an Earth Engine Cloud project when satellite validation is required.
+5. Run from the repository root:
 
-## Expanding the ESLint configuration
+```bash
+docker compose up --build
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Open `http://localhost:8080`.
+
+The frontend is built with `VITE_API_BASE_URL=/api/v1`. Nginx proxies `/api/` to FastAPI, so the browser uses one origin for the integrated deployment.
+
+## Deployment configuration
+
+For a real public hostname, replace the local host/origin values with explicit HTTPS values in the API environment. The backend production profile intentionally disables OpenAPI/docs and rejects wildcard hosts/origins.
+
+Authentication/identity is not invented here because it was not specified in the original HydroShield requirements. Put the stack behind the organization's authentication and ingress layer for internet-facing use.
+
+## Verification
+
+Backend:
+
+```bash
+cd backend
+python -m pytest -q -W error
+```
+
+Frontend source/integration checks:
+
+```bash
+cd frontend
+node scripts/source-contract-check.mjs
+HYDROSHIELD_API_URL=http://127.0.0.1:8000/api/v1 npm run test:integration
+```
+
+Vercel runs `npm ci` and `npm run build` from the `frontend/` project. The repository also includes a root `vercel.json` for deploying the monorepo without changing the project root.
+
+## Original-system safety boundary
+
+HydroShield outputs are scenario-based decision-support products, not guaranteed emergency predictions. Terrain quality, breach assumptions, river geometry, roughness, boundary conditions, resolution and hydrologic inputs materially affect results.

@@ -1,88 +1,110 @@
-import { useState } from 'react'
-import { Layers3, Search } from 'lucide-react'
+import { useEffect, useMemo, useState } from 'react'
+import { Layers3, LocateFixed, Search, SlidersHorizontal } from 'lucide-react'
 import MapView from './MapView'
 
-const defaultLayerItems = [
-  'River',
-  'Dam',
-  'Flood Extent',
-  'Water Depth',
-  'Velocity',
-  'Arrival Time',
-  'Roads',
-  'Settlements',
-  'Infrastructure',
-  'Satellite',
+const contextLayers = [
+  ['DEM', 'Terrain'],
+  ['River', 'Hydrology'],
+  ['Dam', 'Scenario'],
+  ['Roads', 'Exposure'],
+  ['Buildings', 'Exposure'],
+  ['Settlements', 'Exposure'],
+  ['Critical Infrastructure', 'Exposure'],
+  ['Satellite', 'Validation'],
 ]
+const resultLayers = ['Water Depth', 'Velocity', 'Arrival Time']
 
-function MapPanel({ activeLayer, setActiveLayer, scenario }) {
+function MapPanel({ activeLayer, setActiveLayer, scenario, riverFile, damFile, analysisId, projectId, datasetIds, satelliteValidationId, studyDataReady = false, timelineFrame = null }) {
   const [visibleLayers, setVisibleLayers] = useState({
+    DEM: studyDataReady,
     River: true,
     Dam: true,
     'Flood Extent': true,
-    Settlements: true,
+    'Water Depth': true,
+    Velocity: false,
+    'Arrival Time': false,
+    Roads: studyDataReady,
+    Buildings: studyDataReady,
+    Settlements: studyDataReady,
+    'Critical Infrastructure': studyDataReady,
+    Satellite: false,
   })
 
-  const toggleLayer = (layer) => {
-    setVisibleLayers((current) => ({ ...current, [layer]: !current[layer] }))
+  useEffect(() => {
+    if (satelliteValidationId) setVisibleLayers((current) => ({ ...current, Satellite: true }))
+  }, [satelliteValidationId])
+
+  useEffect(() => {
+    if (!studyDataReady) return
+    setVisibleLayers((current) => ({
+      ...current,
+      DEM: true, River: true, Dam: true, Roads: true, Buildings: true,
+      Settlements: true, 'Critical Infrastructure': true,
+    }))
+  }, [studyDataReady])
+  const [rasterOpacity, setRasterOpacity] = useState(78)
+  const [resetToken, setResetToken] = useState(0)
+
+  const hasAnalysis = Boolean(analysisId)
+  const effectiveLayer = hasAnalysis && resultLayers.includes(activeLayer) ? activeLayer : 'Water Depth'
+  const activeLabel = hasAnalysis ? effectiveLayer : 'Flood Extent'
+
+  const toggle = (layer) => setVisibleLayers((current) => ({ ...current, [layer]: !current[layer] }))
+  const setResultLayer = (layer) => {
+    setActiveLayer(layer)
+    setVisibleLayers((current) => ({
+      ...current,
+      'Flood Extent': true,
+      'Water Depth': layer === 'Water Depth',
+      Velocity: layer === 'Velocity',
+      'Arrival Time': layer === 'Arrival Time',
+    }))
   }
 
-  return (
-    <section className="rounded-[20px] border-2 border-sky-700/80 bg-sky-50/80 shadow-[0_6px_0_rgba(25,64,83,0.12)]">
-      <div className="relative h-140 overflow-hidden rounded-[18px] border-2 border-sky-700/70 bg-[linear-gradient(120deg,rgba(147,196,114,0.9),rgba(90,136,75,0.86))] m-[10px_10px_0]">
-        <div className="absolute left-4 top-4 z-500 flex w-65 items-center gap-2 rounded-xl border-2 border-sky-700/80 bg-white/85 px-3 py-2 text-sm text-slate-500 shadow-lg backdrop-blur-sm">
-          <Search size={16} />
-          <span>Search location...</span>
-        </div>
+  const layerHint = useMemo(() => {
+    if (!hasAnalysis) return 'Run a simulation and finish result processing to activate quantitative flood layers.'
+    if (effectiveLayer === 'Water Depth') return 'Colors show maximum water depth; the flood boundary remains visible.'
+    if (effectiveLayer === 'Velocity') return 'Colors show maximum reconstructed flow velocity; click the map to inspect a cell.'
+    return 'Colors show flood arrival time; early arrival is shown at the low end of the scale.'
+  }, [effectiveLayer, hasAnalysis])
 
-        <div className="absolute bottom-4 left-4 z-500 rounded-xl border-2 border-sky-700/80  px-3 py-2 text-blue-800 shadow-lg backdrop-blur-sm">
-          <div className="text-[0.65rem] font-bold uppercase tracking-[0.12em] text-blue-800">Active scenario</div>
-          <div className="mt-0.5 text-sm font-black">{scenario} <span className="font-normal text-blue-900">/ {activeLayer}</span></div>
-        </div>
-
-        <div className="absolute right-4 top-4 z-500 w-55 rounded-xl border-2 border-sky-700/80 bg-slate-50/90 p-2 shadow-xl backdrop-blur-sm">
-          <div className="mb-1.5 flex items-center gap-2 text-[0.85rem] font-bold text-slate-800">
-            <Layers3 size={15} />
-            <span>Layers</span>
-          </div>
-          <div className="grid gap-1">
-            {defaultLayerItems.map((item) => (
-              <label key={item} className="flex items-center gap-2 text-[0.8rem] text-slate-700">
-                <input type="checkbox" checked={visibleLayers[item] ?? false} onChange={() => toggleLayer(item)} className="h-3.5 w-3.5 accent-sky-600" />
-                <span>{item}</span>
-              </label>
-            ))}
-          </div>
-        </div>
-
-        <MapView visibleLayers={visibleLayers} activeLayer={activeLayer} />
+  return <section className="rounded-[20px] border-2 border-sky-700/80 bg-sky-50/80">
+    <div className="relative m-[10px_10px_0] h-[600px] overflow-hidden rounded-[18px] border-2 border-sky-700/70 bg-slate-200">
+      <div className="absolute left-4 top-4 z-[500] flex w-[300px] items-center gap-2 rounded-xl border-2 border-sky-700/80 bg-white/92 px-3 py-2 text-sm text-slate-600 shadow-lg">
+        <Search size={16} className="text-sky-700"/><div><div className="font-bold text-slate-800">Interactive flood map</div><div className="text-[0.65rem] font-semibold text-slate-500">Click a result cell to inspect values</div></div>
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-4 bg-sky-50/80 px-4 pb-4 pt-3">
-        <div>
-          <div className="text-base font-bold text-slate-800">Visualization</div>
-          <div className="mt-0.5 text-xs font-semibold text-slate-500">Showing {activeLayer.toLowerCase()} layer</div>
-        </div>
-        <div className="flex flex-wrap gap-2.5">
-          {['Flood Extent', 'Water Depth', 'Velocity', 'Arrival Time'].map((label) => (
-            <button
-              key={label}
-              type="button"
-              className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold ${
-                activeLayer === label
-                  ? 'border-sky-700/70 bg-sky-100 text-sky-800'
-                  : 'border-sky-700/50 bg-white/20 text-slate-700'
-              }`}
-              onClick={() => setActiveLayer(label)}
-            >
-              <span className={`h-2.5 w-2.5 rounded-full ${activeLayer === label ? 'bg-sky-500' : 'bg-slate-400'}`} />
-              {label}
-            </button>
-          ))}
-        </div>
+      <div className="absolute bottom-4 left-4 z-[500] max-w-[320px] rounded-xl border-2 border-sky-700/80 bg-slate-950/92 px-3 py-2 text-white shadow-lg">
+        <div className="text-[0.65rem] font-bold uppercase tracking-[0.12em] text-cyan-300">Active scenario</div>
+        <div className="mt-0.5 text-sm font-black">{scenario || 'Dam-break scenario'} <span className="font-normal text-slate-400">/ {activeLabel}</span></div>
       </div>
-    </section>
-  )
+
+      <div className="absolute right-4 top-4 z-[500] w-[272px] rounded-2xl border-2 border-sky-700/80 bg-white/96 p-3 shadow-xl backdrop-blur">
+        <div className="mb-2 flex items-center gap-2 text-[0.9rem] font-bold text-slate-800"><Layers3 size={16} className="text-sky-700"/>Map layers</div>
+        <div className="rounded-xl border border-sky-700/20 bg-sky-50/80 p-2.5">
+          <div className="mb-1.5 text-[0.67rem] font-black uppercase tracking-[0.12em] text-slate-500">Flood result</div>
+          <button type="button" onClick={() => setVisibleLayers((current) => ({ ...current, 'Flood Extent': !current['Flood Extent'] }))} className="flex w-full items-center justify-between rounded-lg border border-sky-700/20 bg-white px-2.5 py-2 text-xs font-bold text-slate-700">
+            <span className="flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-sky-500"/>Flood Extent</span><span>{visibleLayers['Flood Extent'] ? 'Visible' : 'Hidden'}</span>
+          </button>
+          <div className="mt-2 grid grid-cols-3 gap-1.5">
+            {resultLayers.map((layer) => <button key={layer} type="button" disabled={!hasAnalysis} onClick={() => setResultLayer(layer)} className={`rounded-lg border px-2 py-2 text-[0.68rem] font-extrabold ${effectiveLayer === layer && hasAnalysis ? 'border-sky-700 bg-sky-100 text-sky-800' : 'border-slate-200 bg-white text-slate-600'} disabled:cursor-not-allowed disabled:opacity-45`}>{layer === 'Water Depth' ? 'Depth' : layer}</button>)}
+          </div>
+          <div className="mt-2 flex items-center gap-2 text-[0.67rem] font-semibold text-slate-500"><SlidersHorizontal size={13}/><span>Map opacity</span><input aria-label="Flood result opacity" type="range" min="35" max="90" value={rasterOpacity} onChange={(event) => setRasterOpacity(Number(event.target.value))} className="w-full accent-sky-600"/><span className="w-9 text-right">{rasterOpacity}%</span></div>
+        </div>
+        <div className="mt-2 grid gap-1">
+          <div className="text-[0.67rem] font-black uppercase tracking-[0.12em] text-slate-500">Context</div>
+          {contextLayers.map(([layer]) => <label key={layer} className="flex items-center justify-between gap-2 rounded-lg px-1 py-1 text-[0.75rem] text-slate-700 hover:bg-sky-50"><span className="flex items-center gap-2"><input type="checkbox" checked={visibleLayers[layer] ?? false} onChange={() => toggle(layer)} className="h-3.5 w-3.5 accent-sky-600"/><span>{layer}</span></span><span className="text-[0.58rem] font-bold uppercase text-slate-400">{contextLayers.find(([name]) => name === layer)?.[1]}</span></label>)}
+        </div>
+        <div className="mt-2 border-t border-sky-700/15 pt-2 text-[0.68rem] font-semibold leading-4 text-slate-500">{layerHint}</div>
+        <button type="button" onClick={() => setResetToken((token) => token + 1)} className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-sky-700/30 bg-white px-2.5 py-2 text-xs font-extrabold text-slate-700"><LocateFixed size={14}/>Reset map view</button>
+      </div>
+
+      <MapView projectId={projectId} datasetIds={datasetIds} visibleLayers={visibleLayers} activeLayer={activeLabel} riverFile={visibleLayers.River ? riverFile : null} damFile={visibleLayers.Dam ? damFile : null} analysisId={analysisId} satelliteValidationId={satelliteValidationId} rasterOpacity={rasterOpacity / 100} floodZoneOpacity={rasterOpacity / 100} resetToken={resetToken} timelineFrame={timelineFrame}/>
+    </div>
+    <div className="flex flex-wrap items-center justify-between gap-4 px-4 pb-4 pt-3">
+      <div><div className="text-base font-bold">Flood visualization</div><div className="mt-0.5 text-xs font-semibold text-slate-500">{hasAnalysis ? `${effectiveLayer} · flood boundary always available` : 'Flood extent appears after result processing'}</div></div>
+      <div className="flex flex-wrap gap-2.5">{resultLayers.map((layer) => <button key={layer} type="button" disabled={!hasAnalysis} className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold ${effectiveLayer === layer && hasAnalysis ? 'border-sky-700/70 bg-sky-100 text-sky-800' : 'border-sky-700/50 bg-white/20 text-slate-700'} disabled:cursor-not-allowed disabled:opacity-45`} onClick={() => setResultLayer(layer)}><span className={`h-2.5 w-2.5 rounded-full ${effectiveLayer === layer && hasAnalysis ? 'bg-sky-500' : 'bg-slate-400'}`}/>{layer}</button>)}</div>
+    </div>
+  </section>
 }
-
 export default MapPanel

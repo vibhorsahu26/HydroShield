@@ -1,0 +1,64 @@
+services:
+  postgis:
+    image: postgis/postgis:16-3.5
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-hydroshield}
+      POSTGRES_USER: ${POSTGRES_USER:-hydroshield}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+    volumes:
+      - hydroshield_postgis_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-hydroshield} -d ${POSTGRES_DB:-hydroshield}"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    networks: [hydroshield]
+
+  api:
+    build:
+      context: .
+      args:
+        HYDROSHIELD_AUTO_PROVISION_DUALSPHYSICS: ${HYDROSHIELD_AUTO_PROVISION_DUALSPHYSICS:-true}
+    restart: unless-stopped
+    depends_on:
+      postgis:
+        condition: service_healthy
+    environment:
+      HYDROSHIELD_ENVIRONMENT: production
+      HYDROSHIELD_DATABASE_URL: ${HYDROSHIELD_DATABASE_URL:?Set HYDROSHIELD_DATABASE_URL}
+      HYDROSHIELD_ALLOWED_HOSTS: ${HYDROSHIELD_ALLOWED_HOSTS:?Set HYDROSHIELD_ALLOWED_HOSTS as a JSON list}
+      HYDROSHIELD_ALLOWED_ORIGINS: ${HYDROSHIELD_ALLOWED_ORIGINS:?Set HYDROSHIELD_ALLOWED_ORIGINS as a JSON list}
+      HYDROSHIELD_DOCS_ENABLED: "false"
+      HYDROSHIELD_ENFORCE_HTTPS: ${HYDROSHIELD_ENFORCE_HTTPS:-false}
+      HYDROSHIELD_RUN_MIGRATIONS_ON_STARTUP: "true"
+      HYDROSHIELD_FORWARDED_ALLOW_IPS: ${HYDROSHIELD_FORWARDED_ALLOW_IPS:-127.0.0.1}
+      HYDROSHIELD_JOB_WORKER_COUNT: ${HYDROSHIELD_JOB_WORKER_COUNT:-1}
+      HYDROSHIELD_MAX_UPLOAD_BYTES: ${HYDROSHIELD_MAX_UPLOAD_BYTES:-52428800}
+      HYDROSHIELD_MAX_REQUEST_BODY_BYTES: ${HYDROSHIELD_MAX_REQUEST_BODY_BYTES:-57671680}
+      HYDROSHIELD_STORAGE_ROOT: /app/data/uploads
+      HYDROSHIELD_PROCESSING_WORK_DIR: /app/data/processed
+      HYDROSHIELD_EXPORT_ROOT: /app/data/exports
+      HYDROSHIELD_MODEL_WORK_DIR: /app/data/model_runs
+      HYDROSHIELD_DUAL_SPH_DEVICE: ${HYDROSHIELD_DUAL_SPH_DEVICE:-gpu}
+      HYDROSHIELD_DUAL_SPH_BIN_DIR: ${HYDROSHIELD_DUAL_SPH_BIN_DIR:-/opt/dualsphysics/bin}
+      HYDROSHIELD_DELFT3D_BIN_DIR: /opt/delft3d/bin
+      HYDROSHIELD_EARTH_ENGINE_PROJECT: ${HYDROSHIELD_EARTH_ENGINE_PROJECT:-}
+    volumes:
+      - hydroshield_data:/app/data
+      - ${DELFT3D_RUNTIME_HOST_DIR:-./solvers/delft3d}:/opt/delft3d:ro
+    ports:
+      - "127.0.0.1:${HYDROSHIELD_PORT:-8000}:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; from app.core.config import get_settings; host=get_settings().allowed_hosts[0]; req=urllib.request.Request('http://127.0.0.1:8000/api/v1/health/ready', headers={'Host': host}); urllib.request.urlopen(req, timeout=3).read()"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    networks: [hydroshield]
+
+networks:
+  hydroshield:
+
+volumes:
+  hydroshield_postgis_data:
+  hydroshield_data:

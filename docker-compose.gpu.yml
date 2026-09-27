@@ -1,0 +1,5 @@
+services:
+  api:
+    gpus: all
+    environment:
+      HYDROSHIELD_DUAL_SPH_DEVICE: gpu

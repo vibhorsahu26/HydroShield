@@ -1,0 +1,1 @@
+{"type": "FeatureCollection", "features": [{"type": "Feature", "properties": {"osm_type": "way", "osm_id": 1, "waterway": "river", "name": "River"}, "geometry": {"type": "LineString", "coordinates": [[85.0, 28.0], [85.1, 28.1]]}}], "source": "OpenStreetMap Overpass API"}
