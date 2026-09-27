@@ -13,8 +13,8 @@ function Header() {
   return (
     <header className="mx-auto mt-4 flex w-[calc(100%-2rem)] max-w-[1700px] items-center justify-between gap-4 rounded-t-[20px] border-2 border-sky-700/80 bg-sky-50/90 px-5 py-3 shadow-[0_4px_0_rgba(25,64,83,0.14)] backdrop-blur-sm">
       <div className="flex min-w-[220px] items-center gap-3">
-        <div className="flex h-11 w-11 items-center justify-center rounded-xl border-2 border-sky-700/80 bg-gradient-to-b from-sky-100 to-cyan-200 shadow-inner">
-          <Shield className="h-6 w-6 text-sky-700" />
+        <div className="flex h-11 w-11 items-center justify-center rounded-xl ">
+          <img src="./public/HydroShield_Logo.png" alt="logo" />
         </div>
         <div className="text-3xl font-bold tracking-[-0.08em] text-sky-700">
           HydroShield

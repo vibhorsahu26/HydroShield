@@ -21,6 +21,10 @@ button, input, select {
   font: inherit;
 }
 
+:where([class*="rounded-"]:not([class~="rounded-full"])) {
+  border-radius: 4px !important;
+}
+
 .leaflet-container {
   width: 100%;
   height: 100%;

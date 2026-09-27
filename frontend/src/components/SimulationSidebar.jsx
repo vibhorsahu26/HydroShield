@@ -49,14 +49,14 @@ function SimulationSidebar({
         <input name="river" value={form.river} onChange={onFieldChange} disabled={riverLoading || isRunning} className="h-10 w-full rounded-xl border-2 border-sky-700/80 bg-white/60 px-3 text-slate-700 outline-none disabled:cursor-wait disabled:opacity-70" placeholder={riverLoading ? 'Detecting river…' : 'Auto-detected from study area'} />
         <div className="mt-4 grid grid-cols-2 gap-2">
           <label><span className="mb-2 block text-sm font-semibold text-slate-600">Study radius (km)</span><input name="studyRadiusKm" type="number" min="1" max="25" value={form.studyRadiusKm} onChange={onFieldChange} className="h-10 w-full rounded-xl border-2 border-sky-700/80 bg-white/60 px-3 text-slate-700 outline-none" /></label>
-          <div className="flex items-end"><button type="button" onClick={onAutoAcquire} disabled={acquisitionLoading || !selectedDam} className="flex h-10 w-full items-center justify-center gap-1 rounded-xl bg-cyan-500 px-2 text-xs font-black text-slate-950 disabled:opacity-40">{acquisitionLoading ? <LoaderCircle size={14} className="animate-spin" /> : <CheckCircle2 size={14} />} {acquisitionLoading ? 'Preparing…' : 'Auto Prepare'}</button></div>
+          <div className="flex items-end"><button type="button" onClick={onAutoAcquire} disabled={acquisitionLoading || !selectedDam} className="flex h-10 w-full items-center justify-center gap-1 rounded-xl px-2 text-xs font-black text-white bg-sky-700">{acquisitionLoading ? <LoaderCircle size={14} className="animate-spin" /> : <CheckCircle2 size={14} />} {acquisitionLoading ? 'Preparing…' : 'Auto Prepare'}</button></div>
         </div>
         <div className={`mt-3 rounded-xl border px-3 py-2 ${autoAcquisition ? 'border-emerald-300 bg-emerald-50' : 'border-sky-700/30 bg-white/50'}`}>
           {autoAcquisition ? <>
             <div className="flex items-center gap-2 text-xs font-black text-emerald-900"><CheckCircle2 size={15} /> Study data loaded automatically</div>
             <div className="mt-2 grid grid-cols-2 gap-1.5">{(autoAcquisition.datasets || []).map((dataset) => <div key={dataset.dataset_id || dataset.id} className="rounded-lg border border-emerald-200 bg-white/70 px-2 py-1 text-[0.68rem] font-bold text-emerald-950">✓ {formatDatasetType(dataset.logical_type || dataset.dataset_type)}</div>)}</div>
             <div className="mt-2 text-[0.68rem] font-semibold text-emerald-800">{autoAcquisition.datasets?.length || 0} datasets ready · preprocessing complete</div>
-          </> : <div className="text-xs font-semibold text-slate-600">Auto Prepare will load the core study datasets for this dam.</div>}
+          </> : <div className="text-xs font-semibold text-blue-700">Auto Prepare will load the core study datasets for this dam.</div>}
         </div>
       </div>
 

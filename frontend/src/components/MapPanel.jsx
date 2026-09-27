@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Layers3, LocateFixed, Search, SlidersHorizontal } from 'lucide-react'
+import { ChevronRight, Layers3, LocateFixed, Search, SlidersHorizontal } from 'lucide-react'
 import MapView from './MapView'
 
 const contextLayers = [
@@ -44,6 +44,7 @@ function MapPanel({ activeLayer, setActiveLayer, scenario, riverFile, damFile, a
   }, [studyDataReady])
   const [rasterOpacity, setRasterOpacity] = useState(78)
   const [resetToken, setResetToken] = useState(0)
+  const [layersCollapsed, setLayersCollapsed] = useState(false)
 
   const hasAnalysis = Boolean(analysisId)
   const effectiveLayer = hasAnalysis && resultLayers.includes(activeLayer) ? activeLayer : 'Water Depth'
@@ -79,8 +80,14 @@ function MapPanel({ activeLayer, setActiveLayer, scenario, riverFile, damFile, a
         <div className="mt-0.5 text-sm font-black">{scenario || 'Dam-break scenario'} <span className="font-normal text-slate-400">/ {activeLabel}</span></div>
       </div>
 
-      <div className="absolute right-4 top-4 z-[500] w-[272px] rounded-2xl border-2 border-sky-700/80 bg-white/96 p-3 shadow-xl backdrop-blur">
-        <div className="mb-2 flex items-center gap-2 text-[0.9rem] font-bold text-slate-800"><Layers3 size={16} className="text-sky-700"/>Map layers</div>
+      <div className="absolute right-4 top-4 z-[500] max-h-[calc(100dvh-2rem)] w-[min(272px,calc(100%-2rem))] overflow-y-auto rounded-2xl border-2 border-sky-700/80 bg-white/96 p-3 shadow-xl backdrop-blur">
+        <div className="mb-2 flex items-center justify-between gap-2 text-[0.9rem] font-bold text-slate-800">
+          <span className="flex items-center gap-2"><Layers3 size={16} className="text-sky-700"/>Map layers</span>
+          <button type="button" onClick={() => setLayersCollapsed((collapsed) => !collapsed)} aria-label={layersCollapsed ? 'Expand map layers' : 'Collapse map layers'} aria-expanded={!layersCollapsed} className="flex h-7 w-7 shrink-0 items-center justify-center rounded border border-sky-700/20 text-slate-600 hover:bg-sky-50">
+            <ChevronRight size={16} className={`transition-transform ${layersCollapsed ? '' : 'rotate-90'}`}/>
+          </button>
+        </div>
+        {!layersCollapsed && <>
         <div className="rounded-xl border border-sky-700/20 bg-sky-50/80 p-2.5">
           <div className="mb-1.5 text-[0.67rem] font-black uppercase tracking-[0.12em] text-slate-500">Flood result</div>
           <button type="button" onClick={() => setVisibleLayers((current) => ({ ...current, 'Flood Extent': !current['Flood Extent'] }))} className="flex w-full items-center justify-between rounded-lg border border-sky-700/20 bg-white px-2.5 py-2 text-xs font-bold text-slate-700">
@@ -93,10 +100,13 @@ function MapPanel({ activeLayer, setActiveLayer, scenario, riverFile, damFile, a
         </div>
         <div className="mt-2 grid gap-1">
           <div className="text-[0.67rem] font-black uppercase tracking-[0.12em] text-slate-500">Context</div>
-          {contextLayers.map(([layer]) => <label key={layer} className="flex items-center justify-between gap-2 rounded-lg px-1 py-1 text-[0.75rem] text-slate-700 hover:bg-sky-50"><span className="flex items-center gap-2"><input type="checkbox" checked={visibleLayers[layer] ?? false} onChange={() => toggle(layer)} className="h-3.5 w-3.5 accent-sky-600"/><span>{layer}</span></span><span className="text-[0.58rem] font-bold uppercase text-slate-400">{contextLayers.find(([name]) => name === layer)?.[1]}</span></label>)}
+          <div className="max-h-36 overflow-y-auto pr-1">
+            {contextLayers.map(([layer, category]) => <label key={layer} className="flex items-center justify-between gap-2 rounded-lg px-1 py-1 text-[0.75rem] text-slate-700 hover:bg-sky-50"><span className="flex min-w-0 items-center gap-2"><input type="checkbox" checked={visibleLayers[layer] ?? false} onChange={() => toggle(layer)} className="h-3.5 w-3.5 shrink-0 accent-sky-600"/><span className="truncate">{layer}</span></span><span className="shrink-0 text-[0.58rem] font-bold uppercase text-slate-400">{category}</span></label>)}
+          </div>
         </div>
         <div className="mt-2 border-t border-sky-700/15 pt-2 text-[0.68rem] font-semibold leading-4 text-slate-500">{layerHint}</div>
         <button type="button" onClick={() => setResetToken((token) => token + 1)} className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-sky-700/30 bg-white px-2.5 py-2 text-xs font-extrabold text-slate-700"><LocateFixed size={14}/>Reset map view</button>
+        </>}
       </div>
 
       <MapView projectId={projectId} datasetIds={datasetIds} visibleLayers={visibleLayers} activeLayer={activeLabel} riverFile={visibleLayers.River ? riverFile : null} damFile={visibleLayers.Dam ? damFile : null} analysisId={analysisId} satelliteValidationId={satelliteValidationId} rasterOpacity={rasterOpacity / 100} floodZoneOpacity={rasterOpacity / 100} resetToken={resetToken} timelineFrame={timelineFrame}/>
